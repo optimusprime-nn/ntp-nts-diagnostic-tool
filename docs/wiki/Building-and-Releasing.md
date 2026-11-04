@@ -48,8 +48,9 @@ The **Release** workflow then:
 - checks that the tag matches the version, then runs the formatting check, clippy, the tests and the self-test
 - builds the programs and the installer, and checks that each one carries the icon
 - publishes the setup, the portable zip and `SHA256SUMS.txt` as a GitHub release. A version with a hyphen, such as `3.2.0-beta.1`, is marked as a pre-release
+- copies the release, with the same files and notes, to the public repository's releases page, which is where the website's download buttons point
 - updates the website and this wiki from `docs/site` and `docs/wiki`, filling in the version and date
 
-The website and wiki live in the public repository optimusprime-nn/ntp-nts-diagnostic-tool. Publishing them needs the `DOCS_PAT` secret: a fine-grained token with **Contents: read and write** on that repository. Without the secret, the release still goes out and the docs step is skipped with a warning.
+The website, wiki and public releases live in the public repository optimusprime-nn/ntp-nts-diagnostic-tool. Publishing to it needs the `DOCS_PAT` secret: a fine-grained token with **Contents: read and write** on that repository. Without the secret, the release still goes out and the copy and docs steps are skipped with a warning.
 
 Running the workflow by hand does everything except publish the release, and leaves the files on the run. Set **publish_docs** to update the site and wiki too.
