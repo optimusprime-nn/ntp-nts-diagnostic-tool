@@ -1,30 +1,39 @@
-# NTP/NTS Diagnostic Tool Wiki
+# NTP/NTS Diagnostic Tool
 
-Welcome to the user documentation for **NTP/NTS Diagnostic Tool**. v2.0.2 remains the known-good NTS interoperability baseline; v2.1.0 is the development version adding integrated NTP peer monitoring, a peer test responder, and fault injection.
+A diagnostic tool for **NTPv4** and **Network Time Security (RFC 8915)** servers, with a fault-injecting NTP responder for testing NTP clients and peers.
 
-![Annotated NTP/NTS Diagnostic Tool overview](https://raw.githubusercontent.com/Optimusprimeums/ntp-nts-diagnostic-tool/main/screenshots/ntp-nts-diagnostic-tool-overview.svg)
+Version 3.1.0 is written in Rust. It has a Windows installer, needs no runtime, and ships as two programs:
 
-## Documentation
+| Program | What it is for |
+| --- | --- |
+| `NTP-NTS-Diagnostic-Tool.exe` | The window: client, responder, live charts and log |
+| `ntpnts.exe` | The same engine on the command line, for scripts and CI |
 
-- [Getting Started](Getting-Started)
-- [Interface Guide](Interface-Guide)
+![The NTP/NTS Diagnostic Tool after an authenticated NTS run](https://optimusprime-nn.github.io/ntp-nts-diagnostic-tool/screenshots/v3-dark.png)
+
+## Start here
+
+- [Installing](Installing): the installer, the portable zip, upgrading and removing
+- [Getting Started](Getting-Started): your first NTS test in a minute
+- [The Window](The-Window): every card, button and counter
+
+## Testing servers
+
 - [Testing an NTP Server](Testing-an-NTP-Server)
-- [NTP Peer Monitoring & Fault Injection](NTP-Peer-Monitoring-and-Fault-Injection)
 - [Testing an NTS Server](Testing-an-NTS-Server)
 - [Understanding Results](Understanding-Results)
 - [Stability Testing](Stability-Testing)
-- [TLS & Certificate Troubleshooting](TLS-and-Certificate-Troubleshooting)
+
+## Testing clients and peers
+
+- [Peer Test Responder](Peer-Test-Responder): 19 fault modes and the self-test suite
+- [Windows Firewall and Administrator](Windows-Firewall-and-Administrator)
+
+## Reference
+
+- [Command Line](Command-Line)
 - [Troubleshooting](Troubleshooting)
-- [Security & Technical Notes](Security-and-Technical-Notes)
-
-Version 2.0.2 is retained as the project's known-good interoperability baseline. It has completed authenticated NTS exchanges against Cloudflare's public NTS service and an independent ESP32-P4 NTS implementation.
-
-## v2.1.0 additions
-
-The development release also adds **Copy Log** and **Clear Log** controls to the Running Log. Linux gains a headless command-line distribution for NTP/NTS queries, peer fault injection, and responder smoke testing, so a desktop session is not required for the Linux CLI.
-
-
-
-## v2.1.0 interface overview
-
-![Annotated NTP/NTS Diagnostic Tool v2.1.0 overview](https://raw.githubusercontent.com/Optimusprimeums/ntp-nts-diagnostic-tool/main/screenshots/ntp-nts-diagnostic-tool-v2.1.0-overview.svg)
+- [Security and Technical Notes](Security-and-Technical-Notes)
+- [Building and Releasing](Building-and-Releasing)
+- [Changelog](Changelog)
+- [Version 2.x](Version-2.x): the earlier Python releases

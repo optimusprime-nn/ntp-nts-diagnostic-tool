@@ -1,11 +1,7 @@
 # Releasing
 
-1. Confirm the intended `ntp_nts_tester_vX_Y_Z.py` is the highest versioned source.
-2. Run `build_windows.bat`.
-3. Test the resulting `dist\NTP-NTS-Diagnostic-Tool.exe` in NTP-only and NTS modes.
-4. Verify certificate validation remains enabled by default.
-5. Test against at least one independent NTS implementation.
-6. Code-sign the executable when a signing certificate is available.
-7. Create and push a tag such as `v2.0.2`.
+Since 3.0 the tool is built from a separate repository, whose release workflow
+publishes the installer and updates this website and the wiki. The last
+release published this way was **3.1.0** (2026-11-03).
 
-A `v*` tag triggers the Windows GitHub Actions workflow and publishes the executable as a GitHub Release asset.
+The Python 2.x sources and releases stay in this repository.

@@ -1,26 +1,27 @@
 # Testing an NTP Server
 
-1. Enter the server hostname or IP.
-2. Clear **Enable NTS (TCP 4460)**.
-3. Choose request count and delay.
-4. Optionally enable **Log to File**.
-5. Click **Start Requests**.
+1. Enter the server's hostname or address, with `:port` if it isn't 123.
+2. Untick **Use NTS**.
+3. Choose **Requests** and **Delay**, and optionally **Log to file**.
+4. Click **Start**.
 
-A valid reply reports `LI`, `VN`, `Mode`, `Stratum`, offset, and network delay. A normal server reply uses `Mode=4`. Stratum zero is treated as a Kiss-o'-Death/control response.
+Each reply is logged with its header fields and timing:
 
-The displayed timing is diagnostic: client T1/T4 are Windows userspace/socket/system-clock observations, not NIC hardware timestamps.
-
-## Testing the other direction: monitoring an NTP peer
-
-v2.1.0 can also listen as a controlled NTP server while another NTP client/peer sends requests to it. Use the **NTP Peer Test Responder** to observe request source/size and exercise peer handling of valid replies, KoD, timestamp correlation faults, malformed packets, duplicate/replayed responses, unsynchronized states, delay and packet loss. See [NTP Peer Monitoring & Fault Injection](NTP-Peer-Monitoring-and-Fault-Injection).
-
-## Linux CLI
-
-For a headless v2.1.0 test:
-
-```bash
-./NTP-NTS-Diagnostic-Tool query pool.ntp.org -n 5
+```text
+NTP: LI=0 VN=4 Mode=4 Stratum=2 Poll=0 Precision=2^-23 RefID=... RootDelay=... RootDisp=...
+Timing: offset=-4.818 ms | network delay=18.844 ms | server processing=0.077 ms
 ```
 
-Use `--delay MS` to change the interval between requests.
+The client checks every reply: it must come from the server's address, echo the request's transmit timestamp as its originate timestamp, and be a version 4 server-mode packet. Replies that fail are counted as failures and say why.
 
+Stratum 0 is a **Kiss-o'-Death**. The tool logs its code (RATE, DENY, RSTR and so on) and counts it under **Kiss-o'-Death**. It also warns about LI=3 (clock not synchronised), stratum 16, and unusually large root dispersion.
+
+From the command line:
+
+```text
+ntpnts query pool.ntp.org -n 5
+```
+
+## Testing the other direction
+
+To test an NTP *client* or *peer*, point it at the tool's responder instead. See [Peer Test Responder](Peer-Test-Responder).

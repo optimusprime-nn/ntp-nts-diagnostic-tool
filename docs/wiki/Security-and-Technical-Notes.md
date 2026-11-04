@@ -1,16 +1,40 @@
-# Security & Technical Notes
+# Security and Technical Notes
 
-The v2.0.2 client is based on RFC 5905 (NTPv4), RFC 8915 (NTS), and RFC 5297 (SIV authenticated encryption).
+## Protocols
 
-NTS mode uses TLS 1.3 NTS-KE, `ntske/1`, TLS-exporter-derived C2S/S2C keys, NTS cookies, and AEAD_AES_SIV_CMAC_256 (AEAD 15).
+| Standard | Used for |
+| --- | --- |
+| RFC 5905 | NTPv4 packets, timing and Kiss-o'-Death |
+| RFC 7822 | NTPv4 extension fields |
+| RFC 8915 | NTS key exchange, cookies and authenticated NTP |
+| RFC 5297 | AES-SIV (AEAD 15, AEAD_AES_SIV_CMAC_256) |
+| RFC 8446, RFC 5705 | TLS 1.3 and the keying-material exporter |
 
-TLS certificate verification is enabled by default. The application intentionally does not log derived C2S/S2C keys. Review logs before publishing them because hostnames, internal IPs, paths, or infrastructure details may be environment-specific.
+NTS uses TLS 1.3 only, through rustls, with ALPN `ntske/1`. The client-to-server and server-to-client keys come from the TLS exporter.
 
-Client T1/T4 are application/userspace observations rather than Ethernet NIC hardware timestamps. The tool is intended for NTP/NTS protocol diagnostics, interoperability validation, and practical timing investigation—not as a sub-microsecond hardware timestamp reference.
+## Certificates and keys
 
-Version 2.0.2 is retained as the known-good interoperability baseline.
+Certificate verification is on by default. The tool trusts the Mozilla root set and the Windows certificate store. **Skip TLS certificate verification** turns off server identity checks and is for controlled lab use only.
 
-v2.1.0 Windows permission assistance is explicit and opt-in: elevation and firewall authorization are separate prompts. The optional firewall rule allows inbound UDP/123 on Domain and Private profiles and excludes Public. Linux does not automatically elevate or modify firewall policy.
+Derived NTS keys are never logged. Logs can still name hosts, internal addresses and file paths, so review them before sharing.
 
-The Linux v2.1.0 CLI is intended to expose the diagnostic and peer-test functionality without requiring a graphical desktop.
+## Replies the client rejects
 
+- Replies from an address other than the one queried (the UDP socket is connected)
+- Replies whose originate timestamp doesn't match the request, which also catches replays
+- NTS replies whose unique identifier or authentication tag doesn't verify
+
+## Timing accuracy
+
+T1 and T4 are taken in userspace, not by the network card. Scheduling, path asymmetry and timestamp placement all affect results. The tool is for protocol diagnostics and interoperability testing, not a sub-microsecond reference.
+
+## Windows
+
+The installer installs per user and needs no administrator rights. The tool asks for elevation only on request, through the standard UAC prompt. The firewall rule it can add covers only the responder's UDP port, on Domain and Private profiles, never Public.
+
+## Interoperability
+
+Version 3.x has completed authenticated NTS runs against:
+
+- Cloudflare's public `time.cloudflare.com`
+- two independent ESP32-P4 NTS servers, with certificate verification on. Over 40 requests at a 2 s interval, all 40 replies authenticated with no loss, 8 cookies and a single key exchange.

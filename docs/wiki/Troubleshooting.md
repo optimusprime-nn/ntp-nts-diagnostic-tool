@@ -1,36 +1,53 @@
 # Troubleshooting
 
-**NTS-KE timeout/refused:** check TCP 4460 reachability, firewall rules, and the NTS-KE service.
+## Key exchange
 
-**ALPN failure:** the TLS peer did not negotiate required `ntske/1`.
+**NTS-KE timeout or connection refused.** Check that TCP 4460 (or the port you gave) is reachable, that no firewall blocks it, and that the server runs NTS-KE.
 
-**Certificate validation failure:** check hostname/IP, SAN, validity dates, trust chain, and Windows trust.
+**ALPN failure.** The server didn't agree to `ntske/1`, so it isn't speaking NTS-KE on that port.
 
-**No cookies returned:** NTS-KE did not provide material needed for authenticated NTP.
+**No cookies returned.** The key exchange finished, but without the cookies authenticated NTP needs. Check the server's NTS configuration.
 
-**NTS authentication failure:** the response could not be authenticated with the negotiated S2C key.
+**NTS-KE WARNING record.** The server sent a warning. It's logged, and the exchange carries on.
 
-**UID/originate mismatch:** the received response does not correspond to the request being validated.
+## Certificates
 
-**KoD packet:** inspect the NTP stratum-zero reference identifier and server policy/rate limiting.
+With verification on, the **Server** you enter must match the certificate.
 
-**Unexpected timing:** Windows userspace timestamping, scheduling, path asymmetry, load, and server timestamp placement can affect offset/delay.
+- **Not valid for this name or IP address.** Use the DNS name the certificate covers. To connect by IP address, the certificate needs that address as an IP Subject Alternative Name.
+- **Unknown issuer.** The tool trusts the Mozilla root set and the Windows certificate store. For a lab server signed by a private CA, install that CA in Windows (Trusted Root Certification Authorities), then restart the tool.
+- **Expired or not yet valid.** Check the certificate dates and this PC's clock.
 
+**Skip TLS certificate verification** (`--insecure`) helps isolate certificate problems in a lab, but it removes the check that you're talking to the right server. Don't use it otherwise.
 
-**Peer responder cannot bind UDP/123:** stop another local NTP service using the port, run with appropriate privileges where required, or select another UDP port for a controlled test.
+## Authenticated NTP
 
-**Peer sends no requests:** verify that the peer is configured for the responder's address/port and that host/network firewalls permit UDP traffic.
+**NTS authentication failure.** The reply didn't verify with the server-to-client key. Check the server's AEAD handling and that it uses the keys from this key exchange.
 
-**Fault mode appears to have no effect:** confirm the Running Log shows incoming requests and the intended response mode. Then inspect the peer's own monitoring/logs; several fault modes are specifically designed to be rejected silently by a correct peer.
+**UID or originate mismatch.** The reply doesn't belong to the request it's being checked against, for example a late or replayed packet.
 
+**NTSN Kiss-o'-Death.** The server couldn't decrypt the cookie, usually after a key rotation or restart. The tool repeats the key exchange by itself.
 
-**Administrator prompt at startup:** v2.1.0 recommends elevation for UDP/123 peer-responder operation and for firewall-rule creation. You may decline and continue normally.
+**Loss only at short delays.** It's probably the server's rate limit. See [Testing an NTS Server](Testing-an-NTS-Server#rate-limits).
 
-**Firewall prompt:** when elevated, approving the prompt creates/refreshes the `NTP-NTS Diagnostic Tool Peer Responder` inbound UDP/123 rule for Domain/Private profiles. Public networks are not opened automatically.
+## Plain NTP
 
-**Remote peer still cannot reach UDP/123:** verify the active Windows network profile, confirm the firewall rule is enabled, confirm another service is not bound to UDP/123, and verify routing/VLAN policy between the peer and test workstation.
+**Kiss-o'-Death.** Stratum 0. The RefID gives the reason: RATE for rate limiting, DENY or RSTR for access refused.
 
-**Linux CLI will not bind UDP/123:** check whether another NTP service already owns the port and check the host's privileged-port policy. Depending on the system, use administrator privileges or an appropriate capability such as `CAP_NET_BIND_SERVICE`. Firewall configuration is not changed automatically on Linux.
+**Reply from another address.** Ignored by design. The client only accepts replies from the address it queried.
 
-**Linux headless use:** the v2.1.0 Linux CLI is intended to run without X11/Wayland. If a build unexpectedly reports a Tk/display dependency, treat that build as a packaging defect rather than configuring a virtual display.
+**Unexpected timing.** Userspace timestamps, scheduling, path asymmetry and load all affect offset and delay. A steady offset usually means this PC's clock is off.
 
+## Responder
+
+**Can't bind UDP/123.** Windows Time or another NTP service holds it. Stop it, or use another port. See [Windows Firewall and Administrator](Windows-Firewall-and-Administrator#windows-time-and-udp123).
+
+**The peer's requests never arrive.** Check that the peer uses the responder's address and port. Check that the **Windows** card shows the rule allowing that port, and that the network is on a Domain or Private profile. Check routing and VLANs between the two.
+
+**A fault mode seems to do nothing.** Check that the log shows the request and the intended mode. Many faults are meant to be dropped silently by a correct client, so check the peer's own logs.
+
+## Installer
+
+**SmartScreen blocks setup.** The installer isn't code-signed yet. Choose **More info**, then **Run anyway**, or check the file's hash first; see [Installing](Installing#checking-a-download).
+
+**"It can't be replaced."** The tool is running. Close it, then **Try again**.

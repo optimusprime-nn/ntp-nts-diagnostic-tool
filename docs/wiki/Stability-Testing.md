@@ -1,9 +1,19 @@
 # Stability Testing
 
-For an extended test, increase **Number of Requests**, choose **Delay (ms)**, enable **Log to File**, select a destination, and start the run.
+For a long run, raise **Requests**, choose a **Delay**, tick **Log to file**, choose a file, and **Start**. For example, 500 requests at 5000 ms runs for about 42 minutes.
 
-For example, **500 requests at 5000 ms** exercises the server for roughly 42 minutes plus network/processing time.
+Watch the counters and the **Timing** charts during the run. At the end, check the **SUMMARY** lines:
 
-Monitor the counters throughout the run. A completed result of Sent 500, Received 500, Failures 0, NTS Failures 0, and KoD Packets 0 shows all configured exchanges completed without a counted failure.
+- **Received** should equal **Sent**, and with NTS so should **Authenticated**.
+- **NTS-KE exchanges** should stay at 1, unless the server rotates its keys (an NTSN Kiss-o'-Death) or the cookies run out.
+- Offset **stddev** and **jitter** show how steady the path and server are.
 
-For NTS, also inspect the saved log for repeated NTS AUTHENTICATED results and healthy cookie-pool replenishment. Timing remains subject to userspace timestamp placement, OS scheduling, network asymmetry, and server timestamp placement.
+From the command line the same run is:
+
+```text
+ntpnts query time.example --nts -n 500 -d 5000 --log stability.log
+```
+
+`ntpnts` exits with code 1 if any request failed, so it can gate a CI job or a scheduled task.
+
+Pick a delay the server's rate limit allows. A delay under a second can trigger rate limiting that looks like packet loss; see [Testing an NTS Server](Testing-an-NTS-Server#rate-limits).
