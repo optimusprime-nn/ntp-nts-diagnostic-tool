@@ -2,9 +2,11 @@
 
 ## Building
 
-Install Rust from <https://rustup.rs>, then:
+Install Rust from <https://rustup.rs>, then get the source and build it:
 
 ```text
+git clone https://github.com/Optimusprimeums/ntp-nts-diagnostic-tool-rs.git
+cd ntp-nts-diagnostic-tool-rs
 cargo test
 cargo build --release
 ```
@@ -51,6 +53,6 @@ The **Release** workflow then:
 - copies the release, with the same files and notes, to the public repository's releases page, which is where the website's download buttons point
 - updates the website and this wiki from `docs/site` and `docs/wiki`, filling in the version and date
 
-The website, wiki and public releases live in the public repository optimusprime-nn/ntp-nts-diagnostic-tool. Publishing to it needs the `DOCS_PAT` secret: a fine-grained token with **Contents: read and write** on that repository. Without the secret, the release still goes out and the copy and docs steps are skipped with a warning.
+The source and the original release live in [Optimusprimeums/ntp-nts-diagnostic-tool-rs](https://github.com/Optimusprimeums/ntp-nts-diagnostic-tool-rs). The website, the wiki and a copy of each release live in [optimusprime-nn/ntp-nts-diagnostic-tool](https://github.com/optimusprime-nn/ntp-nts-diagnostic-tool), next to the Python 2.x releases. Publishing to it needs the `DOCS_PAT` secret: a fine-grained token with **Contents: read and write** on that repository. Without the secret, the release still goes out and the copy and docs steps are skipped with a warning.
 
 Running the workflow by hand does everything except publish the release, and leaves the files on the run. Set **publish_docs** to update the site and wiki too.

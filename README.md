@@ -1,8 +1,14 @@
 # NTP/NTS Diagnostic Tool
 
+> [!IMPORTANT]
+> **Version 3.x is a Rust rewrite and is now the current release.** It adds a Windows installer, a modern window and the `ntpnts` command line.
+> **[Download v3.x](https://github.com/optimusprime-nn/ntp-nts-diagnostic-tool/releases/latest)** · [Website](https://optimusprime-nn.github.io/ntp-nts-diagnostic-tool/) · [Wiki](https://github.com/optimusprime-nn/ntp-nts-diagnostic-tool/wiki) · [Rust source](https://github.com/Optimusprimeums/ntp-nts-diagnostic-tool-rs) · [Moving from 2.x](https://github.com/optimusprime-nn/ntp-nts-diagnostic-tool/wiki/Version-2.x)
+>
+> This README and the sources in this repository describe the earlier **Python 2.x** tool, which stays available from the [v2.1.0](https://github.com/optimusprime-nn/ntp-nts-diagnostic-tool/releases/tag/v2.1.0) and [v2.0.2](https://github.com/optimusprime-nn/ntp-nts-diagnostic-tool/releases/tag/v2.0.2) releases.
+
 A cross-platform diagnostic utility for testing **NTPv4** and **Network Time Security (NTS)** servers on Windows and Linux.
 
-Version **2.0.2** remains the known-good NTS interoperability baseline. **v2.1.0 is the current development version** and adds an integrated NTP peer test responder and fault-injection/peer-monitoring tools. It performs real NTS Key Establishment over TLS 1.3, negotiates `ntske/1`, derives client-to-server and server-to-client keys with the TLS exporter, exchanges NTS cookies, creates authenticated NTP requests using AEAD AES-SIV-CMAC-256, verifies authenticated replies, and reports NTP offset and network delay.
+Version **2.0.2** remains the known-good NTS interoperability baseline. **v2.1.0 is the last Python release** and adds an integrated NTP peer test responder and fault-injection/peer-monitoring tools. It performs real NTS Key Establishment over TLS 1.3, negotiates `ntske/1`, derives client-to-server and server-to-client keys with the TLS exporter, exchanges NTS cookies, creates authenticated NTP requests using AEAD AES-SIV-CMAC-256, verifies authenticated replies, and reports NTP offset and network delay.
 
 ![Annotated NTP/NTS Diagnostic Tool v2.0.2 overview](screenshots/ntp-nts-diagnostic-tool-overview.svg)
 
@@ -14,7 +20,7 @@ Version **2.0.2** remains the known-good NTS interoperability baseline. **v2.1.0
 
 ## Quick start
 
-1. Download the standalone Windows executable from the latest GitHub Release.
+1. Download the standalone Windows executable from the [v2.1.0 release](https://github.com/optimusprime-nn/ntp-nts-diagnostic-tool/releases/tag/v2.1.0).
 2. Enter the NTP/NTS server hostname or IP address.
 3. Leave **Enable NTS** checked for RFC 8915 testing, or clear it for plain NTP.
 4. Keep TLS certificate verification enabled for normal NTS operation.

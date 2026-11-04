@@ -1,1 +1,1 @@
-NTP/NTS Diagnostic Tool 3.1.0 · released 2026-11-03 · MIT License · [Website](https://optimusprime-nn.github.io/ntp-nts-diagnostic-tool/)
+NTP/NTS Diagnostic Tool 3.1.0 · released 2026-11-03 · MIT License · [Website](https://optimusprime-nn.github.io/ntp-nts-diagnostic-tool/) · [Source](https://github.com/Optimusprimeums/ntp-nts-diagnostic-tool-rs) · [Report an issue](https://github.com/Optimusprimeums/ntp-nts-diagnostic-tool-rs/issues)
